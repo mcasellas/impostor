@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Joc de l'Impostor</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="px-4 py-5 my-5 text-center"> 
+            <!-- <img class="d-block mx-auto mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">  -->
+            <i class="bi bi-incognito" style="font-size: 6rem; color: cornflowerblue;"></i>
+            <h1 class="display-5 fw-bold text-body-emphasis">Som-hi!</h1>
+            <div class="col-lg-6 mx-auto">
+                <p>Número de jugadors: <span id="totalPlayers">5</span></p> 
+                <!-- <p class="lead mb-4">Un jugador és l'impostor i no coneix la paraula secreta. La resta hauran de donar pistes sense ser massa evidents!</p>  -->
+                <div class="form-group mb-4">
+                    <label for="playerNumber" class="mb-2">Número del jugador</label>
+                    <input type="number" class="form-control" id="playerNumber">
+                    <small class="form-text text-muted">Poseu-vos d'acord entre vosaltres.</small>
+                </div>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center"> 
+                    <button type="button" onclick="startGame()" class="btn btn-primary btn-lg px-4 gap-3">Assignar paraules</button>
+                </div>
+
+                <div class="accordion mt-4" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Ronda #1
+                        </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <div class="row">
+                                <div class="col-4">
+                                    <i class="bi bi-incognito" style="font-size: 6rem; color: cornflowerblue;"></i>
+                                </div>
+                                <div class="col-8">
+                                    <strong>Shhht! Dissumula!</strong> Ets l'infiltrat, has de passar desparecebut.
+                                    <!-- <strong>This is the first item’s accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow. -->
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+
+        <script>
+
+            let decodedRounds = null;
+            let decodedTotalPlayers = null;
+            let decodedImpostorOrder = [];
+            
+            const params = new URLSearchParams(window.location.search);
+            const seedFromUrl = params.get('seed');
+            if (seedFromUrl) {
+                // Fes servir la seed
+                console.log('Seed de la URL:', seedFromUrl);
+
+                let seedRecover = seedFromUrl;
+
+                const decodedRounds = parseInt(seedRecover.substring(0, 2));
+                const decodedTotalPlayers = parseInt(seedRecover.substring(2, 4));
+
+                const impostorDigits = seedRecover.substring(4);
+                const decodedImpostorOrder = [];
+                for (let i = 0; i < impostorDigits.length; i += 2) {
+                    decodedImpostorOrder.push(parseInt(impostorDigits.substring(i, i + 2)));
+                }
+
+                document.getElementById("totalPlayers").innerHTML = decodedTotalPlayers;
+
+                console.log({
+                    decodedRounds,
+                    decodedTotalPlayers,
+                    decodedImpostorOrder
+                });
+
+            }
+
+
+            function startGame() {
+                let playerNum = document.getElementById("playerNumber").value;
+                console.log(playerNum);
+                if (playerNum < 1 || playerNum > decodedTotalPlayers) alert("Número de jugador invàlid");
+
+                
+
+                // const totalPlayers = parseInt(document.getElementById('totalPlayers').value);
+
+                // if (!currentSeed) {
+                //     alert('Primer has de generar la seed!');
+                //     return;
+                // }
+                // if (!playerNum || !totalPlayers || playerNum < 1 || playerNum > totalPlayers) {
+                //     alert('Indica el número correcte de jugador!');
+                //     return;
+                // }
+
+                // console.log(`Starting game with Seed: ${currentSeed}, Player Number: ${playerNum}, Total Players: ${totalPlayers}`);
+
+                // const rng = mulberry32(hashCode(currentSeed));
+                // const paraula = paraules[Math.floor(rng() * paraules.length)];
+                // const impostor = Math.floor(rng() * totalPlayers) + 1; // Número de jugador impostor (1 - totalPlayers)
+
+                // console.log(`Selected Word: ${paraula}`);
+                // console.log(`Impostor is Player Number: ${impostor}`);
+
+                // const resultDiv = document.getElementById('result');
+
+                // if (playerNum === impostor) {
+                //     resultDiv.innerHTML = '<b>Ets l\'impostor!</b><br>Intenta descobrir la paraula!';
+                // } else {
+                //     resultDiv.innerHTML = '<b>Paraula secreta:</b><br>' + paraula;
+                // }
+            }
+        </script>
+    </body>
+</html>

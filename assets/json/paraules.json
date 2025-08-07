@@ -1,0 +1,17 @@
+[
+  { "name": "Animals", "words": ["Girafa", "Tortuga", "Gat", "Elefant", "Lleó", "Cavall", "Ós", "Cangur", "Zebra", "Ratolí"] },
+  { "name": "Objectes", "words": ["Guitarra", "Cafè", "Telèfon", "Rellotge", "Llibre", "Cadira", "Clau", "Llàpis", "Ventilador", "Tauleta"] },
+  { "name": "Llocs", "words": ["Barcelona", "Castell", "Lluna", "Platja", "Montanya", "Bosc", "Riu", "Ciutat", "Poble", "Parc"] },
+  { "name": "Colors", "words": ["Vermell", "Blau", "Groc", "Verd", "Negre", "Blanc", "Taronja", "Lila", "Rosa", "Marró"] },
+  { "name": "Professions", "words": ["Metge", "Fuster", "Professor", "Cuiner", "Enginyer", "Pintor", "Policia", "Pilota", "Advocat", "Infermer"] },
+  { "name": "Esports", "words": ["Futbol", "Bàsquet", "Tennis", "Natació", "Handbol", "Voleibol", "Ciclisme", "Atletisme", "Rugbi", "Golf"] },
+  { "name": "Menjars", "words": ["Pizza", "Paella", "Hamburguesa", "Gelat", "Pasta", "Sopa", "Amanida", "Bistec", "Tortilla", "Croissant"] },
+  { "name": "Emocions", "words": ["Alegria", "Tristesa", "Ràbia", "Calma", "Por", "Sorpresa", "Enveja", "Amor", "Orgull", "Vergonya"] },
+  { "name": "Vehicles", "words": ["Cotxe", "Bicicleta", "Avió", "Barca", "Tren", "Moto", "Camió", "Taxi", "Helicòpter", "Autobús"] },
+  { "name": "Instruments musicals", "words": ["Piano", "Violí", "Bateria", "Flauta", "Saxòfon", "Trompeta", "Guitarra", "Clavicèmbal", "Contrabaix", "Acordió"] },
+  { "name": "Electrònica", "words": ["Televisor", "Ordinador", "Mòbil", "Tablet", "Impressora", "Auriculars", "Altaveu", "Càmera", "Microones", "Ràdio"] },
+  { "name": "Festes", "words": ["Nadal", "Carnaval", "Setmana Santa", "Diada", "Castanyada", "Cap d'any", "Sant Jordi", "Halloween", "Festa Major", "Revetlla"] },
+  { "name": "Plantes", "words": ["Rosa", "Gira-sol", "Arbre", "Margarida", "Lilà", "Ficus", "Cactus", "Heura", "Tulipa", "Orquídia"] },
+  { "name": "Astronomia", "words": ["Estrella", "Planeta", "Lluna", "Cometa", "Galàxia", "Sol", "Meteor", "Nebulosa", "Forat negre", "Constel·lació"] },
+  { "name": "Tecnologia", "words": ["Internet", "Robot", "Software", "Hardware", "Aplicació", "Servidor", "Dades", "Núvol", "Intel·ligència artificial", "Ciberseguretat"] }
+]

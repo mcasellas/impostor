@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Joc de l'Impostor</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="px-4 py-5 my-5 text-center"> 
+            <!-- <img class="d-block mx-auto mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">  -->
+            <i class="bi bi-incognito" style="font-size: 6rem; color: cornflowerblue;"></i>
+            <h1 class="display-5 fw-bold text-body-emphasis">El joc de l'impostor</h1> 
+            <div class="col-lg-6 mx-auto"> 
+                <p class="lead mb-4">Un jugador és l'impostor i no coneix la paraula secreta. La resta hauran de donar pistes sense ser massa evidents!</p> 
+                <form action="play.html" method="get">
+                    <div class="form-group mb-4">
+                        <label for="seed" class="mb-2">Llavor</label>
+                        <input type="number" class="form-control text-center" id="seed" name="seed" aria-describedby="seed">
+                        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+                    </div>
+                    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center"> 
+                        <button type="submit" class="btn btn-primary btn-lg px-4 gap-3">Uneix-te a una partida</button>
+                    </div>
+                </form>
+                <div class="form-group my-4">
+                    <label for="players" class="mb-2">Número de jugadors</label>
+                    <input type="number" class="form-control text-center" id="players" aria-describedby="players" placeholder="3" min="3" max="9" value="3">
+                    <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+                </div>
+                <button type="submit" class="btn btn-outline-secondary btn-lg px-4" onclick="generateSeed()">Generar partida</button>
+                <h1 id="seed_placeholder" class="mt-4" style="display: none;"><strong>Llavor: </strong> <span id="seed_show">XXX</span></h1>
+            </div> 
+        </div>
+
+        <script>
+
+            let paraules = [];
+
+            fetch('assets/json/paraules.json')
+                .then(response => response.json())
+                .then(data => {
+                    paraules = data;
+                    console.log('Categories carregades:', paraules);
+                })
+                .catch(error => console.error('Error carregant categories:', error));
+            
+       
+            function generateSeed() {
+                const totalPlayers = parseInt(document.getElementById('players').value);
+                if (!totalPlayers || totalPlayers < 3) {
+                    alert('Cal indicar com a mínim 3 jugadors!');
+                    return;
+                }
+
+                const rounds = 5; // Nombre de rondes per defecte
+                const timestamp = Date.now();
+
+                const impostorOrder = [];
+                for (let i = 0; i < rounds; i++) {
+                    const impostor = Math.floor(Math.random() * totalPlayers) + 1;
+                    impostorOrder.push(impostor);
+                }
+
+                let categories = [];
+
+                for (let i = 0; i < rounds; i++) {
+                    var categoria = null;
+                    while (categories.length < 5 && (categoria == null || categoria in categories)) {
+                        let categoria = Math.floor(Math.random() * paraules.length) + 1;
+                        console.log(categoria);
+                        if (!categories.includes(categoria)) {
+                            categories.push(categoria);
+                        } 
+                    }
+                }
+
+                console.log(categories);
+
+                // Pad rounds and totalPlayers to 2 digits
+                let seedString = rounds.toString().padStart(2, '0') + totalPlayers.toString().padStart(2, '0');
+
+                // Add impostor order, each padded to 2 digits
+                impostorOrder.forEach(num => {
+                    seedString += num.toString().padStart(2, '0');
+                });
+
+                console.log('Encoded Seed String:', seedString);
+
+                document.getElementById("seed_show").innerHTML = seedString;
+                document.getElementById("seed_placeholder").style.display = "block";
+                
+            }
+        </script>
+    </body>
+</html>
