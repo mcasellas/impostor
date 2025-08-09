@@ -10,114 +10,125 @@
     <body>
         <div class="px-4 py-5 my-5 text-center"> 
             <!-- <img class="d-block mx-auto mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">  -->
-            <i class="bi bi-incognito" style="font-size: 6rem; color: cornflowerblue;"></i>
+            <a href="/"><i class="bi bi-incognito" style="font-size: 6rem; color: cornflowerblue;"></i></a>
             <h1 class="display-5 fw-bold text-body-emphasis">Som-hi!</h1>
-            <div class="col-lg-6 mx-auto">
-                <p>Número de jugadors: <span id="totalPlayers">5</span></p> 
+            <p>Jugador: <span id="selected_player">X</span>/<span id="totalPlayers">X</span></p>
+            <div class="col-lg-6 mx-auto" id="select_player">
                 <!-- <p class="lead mb-4">Un jugador és l'impostor i no coneix la paraula secreta. La resta hauran de donar pistes sense ser massa evidents!</p>  -->
                 <div class="form-group mb-4">
                     <label for="playerNumber" class="mb-2">Número del jugador</label>
-                    <input type="number" class="form-control" id="playerNumber">
+                    <input type="number" class="form-control" id="playerNumber" min="1" required>
                     <small class="form-text text-muted">Poseu-vos d'acord entre vosaltres.</small>
                 </div>
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center"> 
-                    <button type="button" onclick="startGame()" class="btn btn-primary btn-lg px-4 gap-3">Assignar paraules</button>
+                    <button type="button" onclick="mostrarRondes()" class="btn btn-primary btn-lg px-4 gap-3">Assignar paraules</button>
                 </div>
 
-                <div class="accordion mt-4" id="accordionExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Ronda #1
-                        </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
+            </div> 
+            <div class="col-lg-6 mx-auto">
+                <div class="accordion mt-4" id="accordionExample"></div>
+            </div>
+        </div>
+
+        <script>
+            let paraules = [];
+            let gameData = null;
+
+            fetch('assets/json/paraules.json')
+                .then(r => r.json())
+                .then(data => {
+                    paraules = data;
+                    decodeSeed();
+                });
+
+            function xorDecrypt(str, key) {
+                let result = '';
+                for (let i = 0; i < str.length; i++) {
+                    result += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+                }
+                return result;
+            }
+
+            function decodeSeed() {
+                const params = new URLSearchParams(window.location.search);
+                const seedFromUrl = params.get('seed');
+                if (!seedFromUrl) return;
+
+                try {
+                    const decrypted = xorDecrypt(atob(seedFromUrl), "clauSecreta123");
+                    gameData = JSON.parse(decrypted);
+                    // console.log(gameData);
+
+                    document.getElementById("totalPlayers").textContent = gameData.p;
+                } catch (e) {
+                    alert("Seed invàlida!");
+                    console.error(e);
+                }
+            }
+
+            function mostrarRondes() {
+                const playerNum = parseInt(document.getElementById("playerNumber").value);
+                if (!playerNum || playerNum < 1 || playerNum > gameData.p) {
+                    alert("Número de jugador invàlid");
+                    return;
+                }   
+
+                document.getElementById("selected_player").textContent = playerNum;
+                document.getElementById("select_player").style.display = "none";
+
+                const container = document.getElementById("accordionExample");
+                container.innerHTML = '';
+
+                gameData.i.forEach((impostor, index) => {
+                    const ronda = index + 1;
+                    const collapseId = `collapse${ronda}`;
+                    const headingId = `heading${ronda}`;
+                    const catIndex = gameData.c[index];
+
+                    let bodyContent = "";
+
+                    if (impostor === playerNum) {
+                        bodyContent = `
                             <div class="row">
                                 <div class="col-4">
                                     <i class="bi bi-incognito" style="font-size: 6rem; color: cornflowerblue;"></i>
                                 </div>
                                 <div class="col-8">
-                                    <strong>Shhht! Dissumula!</strong> Ets l'infiltrat, has de passar desparecebut.
-                                    <!-- <strong>This is the first item’s accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow. -->
+                                    <strong>Shhht! Dissimula!</strong> Ets l'infiltrat, has de passar desapercebut.
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        const wordIndex = gameData.w[index];
+                        bodyContent = `
+                            <div class="row">
+                                <div class="col-4">
+                                    <i class="bi bi-lightbulb" style="font-size: 6rem; color: gold;"></i>
+                                </div>
+                                <div class="col-8">
+                                    <p><strong>Paraula:</strong> ${paraules[catIndex].words[wordIndex]}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    container.innerHTML += `
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="${headingId}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#${collapseId}" aria-expanded="false" aria-controls="${collapseId}">
+                                    Ronda #${ronda} - ${paraules[catIndex].name}
+                                </button>
+                            </h2>
+                            <div id="${collapseId}" class="accordion-collapse collapse" aria-labelledby="${headingId}" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    ${bodyContent}
                                 </div>
                             </div>
                         </div>
-                        </div>
-                    </div>
-                </div>
-            </div> 
-        </div>
-
-        <script>
-
-            let decodedRounds = null;
-            let decodedTotalPlayers = null;
-            let decodedImpostorOrder = [];
-            
-            const params = new URLSearchParams(window.location.search);
-            const seedFromUrl = params.get('seed');
-            if (seedFromUrl) {
-                // Fes servir la seed
-                console.log('Seed de la URL:', seedFromUrl);
-
-                let seedRecover = seedFromUrl;
-
-                const decodedRounds = parseInt(seedRecover.substring(0, 2));
-                const decodedTotalPlayers = parseInt(seedRecover.substring(2, 4));
-
-                const impostorDigits = seedRecover.substring(4);
-                const decodedImpostorOrder = [];
-                for (let i = 0; i < impostorDigits.length; i += 2) {
-                    decodedImpostorOrder.push(parseInt(impostorDigits.substring(i, i + 2)));
-                }
-
-                document.getElementById("totalPlayers").innerHTML = decodedTotalPlayers;
-
-                console.log({
-                    decodedRounds,
-                    decodedTotalPlayers,
-                    decodedImpostorOrder
+                    `;
                 });
-
             }
-
-
-            function startGame() {
-                let playerNum = document.getElementById("playerNumber").value;
-                console.log(playerNum);
-                if (playerNum < 1 || playerNum > decodedTotalPlayers) alert("Número de jugador invàlid");
-
-                
-
-                // const totalPlayers = parseInt(document.getElementById('totalPlayers').value);
-
-                // if (!currentSeed) {
-                //     alert('Primer has de generar la seed!');
-                //     return;
-                // }
-                // if (!playerNum || !totalPlayers || playerNum < 1 || playerNum > totalPlayers) {
-                //     alert('Indica el número correcte de jugador!');
-                //     return;
-                // }
-
-                // console.log(`Starting game with Seed: ${currentSeed}, Player Number: ${playerNum}, Total Players: ${totalPlayers}`);
-
-                // const rng = mulberry32(hashCode(currentSeed));
-                // const paraula = paraules[Math.floor(rng() * paraules.length)];
-                // const impostor = Math.floor(rng() * totalPlayers) + 1; // Número de jugador impostor (1 - totalPlayers)
-
-                // console.log(`Selected Word: ${paraula}`);
-                // console.log(`Impostor is Player Number: ${impostor}`);
-
-                // const resultDiv = document.getElementById('result');
-
-                // if (playerNum === impostor) {
-                //     resultDiv.innerHTML = '<b>Ets l\'impostor!</b><br>Intenta descobrir la paraula!';
-                // } else {
-                //     resultDiv.innerHTML = '<b>Paraula secreta:</b><br>' + paraula;
-                // }
-            }
-        </script>
+            </script>
     </body>
 </html>
