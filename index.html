@@ -6,36 +6,18 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
         <div class="px-5 py-5 my-5 text-center"> 
             <!-- <img class="d-block mx-auto mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">  -->
-            <i class="bi bi-incognito" style="font-size: 6rem; color: cornflowerblue;"></i>
+            <a href="/"><i class="bi bi-incognito" style="font-size: 6rem; color: cornflowerblue;"></i></a>
             <h1 class="display-5 fw-bold text-body-emphasis">El joc de l'impostor</h1> 
             <div class="col-lg-6 mx-auto"> 
                 <p class="lead mb-4">Un jugador és l'impostor i no coneix la paraula secreta. La resta hauran de donar pistes sense ser massa evidents!</p> 
                 <div class="row">
-                    <div class="col-lg-6 mx-auto">
-                        <form action="play.html" method="get">
-                        <div class="card border-primary mb-4">
-                            <div class="card-header bg-transparent border-primary">
-                                <h5>Uneix-te a una partida existent</h5>
-                            </div>
-                            <div class="card-body">
-                                    <div class="form-group">
-                                        <label for="seed" class="mb-2">Llavor</label>
-                                        <input type="text" class="form-control text-center" id="seed" name="seed" aria-describedby="seed" required>
-                                        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
-                                    </div>
-                                </div>
-                                <div class="card-footer border-success">
-                                    <button type="submit" class="btn btn-primary btn-lg px-4 gap-3">Uneix-te a una partida</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-lg-6 mx-auto">
-                        <div class="card border-success">
+                    <div id="generar_partida" class="col-lg-6 mx-auto">
+                        <div class="card border-success mb-4">
                             <div class="card-header bg-transparent border-success">
                                 <h5>Inicia una nova partida</h5>
                             </div>
@@ -51,13 +33,32 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-lg-6 mx-auto">
+                        <form action="play.html" method="get">
+                            <div class="card border-primary">
+                                <div class="card-header bg-transparent border-primary">
+                                    <h5>Uneix-te a una partida existent</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="seed" class="mb-2">Llavor</label>
+                                        <input type="text" class="form-control text-center" id="seed" name="seed" aria-describedby="seed" required>
+                                        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+                                    </div>
+                                </div>
+                                <div class="card-footer border-primary">
+                                    <div class="row">
+                                        <button type="submit" class="btn btn-primary btn-lg btn-block">Uneix-te a la partida</button>
+                                        <button type="button" class="btn btn-success btn-lg btn-block mt-2" id="shareBtn" style="display: none;">Compartir enllaç</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div id="seed_placeholder" class="mt-4" style="display: none;">
                     <h1><strong>Llavor: </strong></h1>
                     <p class="text-center" id="seed_show"></p>
-                    <button id="shareBtn" class="btn btn-success mt-2">
-                        Compartir enllaç
-                    </button>
                 </div>
             </div> 
         </div>
@@ -121,7 +122,8 @@
 
                 document.getElementById("seed_show").textContent = seedGenerat;
                 document.getElementById("seed").value = seedGenerat;
-                document.getElementById("seed_placeholder").style.display = "block";
+                document.getElementById("shareBtn").style.display = "block";
+                document.getElementById("generar_partida").style.display = "none";
             }
 
             document.getElementById("shareBtn").addEventListener("click", () => {
